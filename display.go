@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"image/png"
+	"io/ioutil"
 	"log"
 	"os"
 
 	"github.com/mattn/go-sixel"
-
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/plotutil"
@@ -17,11 +17,7 @@ import (
 )
 
 func plotData(x []float64, a []float64) {
-	p, err := plot.New()
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	p := plot.New()
 	p.Title.Text = "sepal length & width"
 	p.X.Label.Text = "length"
 	p.Y.Label.Text = "width"
@@ -54,11 +50,14 @@ func plotData(x []float64, a []float64) {
 	}
 	var b bytes.Buffer
 	w.WriteTo(&b)
-	img, err := png.Decode(&b)
-	if err != nil {
-		println("foO")
-		panic(err)
+	if false {
+		img, err := png.Decode(&b)
+		if err != nil {
+			println("foO")
+			panic(err)
+		}
+		sixel.NewEncoder(os.Stdout).Encode(img)
+	} else {
+		ioutil.WriteFile("out.png", b.Bytes(), 0644)
 	}
-	sixel.NewEncoder(os.Stdout).Encode(img)
-	//ioutil.WriteFile("out.png", b.Bytes(), 0644)
 }
